@@ -1,214 +1,269 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'مدونتي')</title>
-    
-    
-<style>
-    
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-/* ---------- الهيكل العام (من app.blade) ---------- */
-body {
-    font-family: Arial, sans-serif;
-    background: #f9f9f9;
-    margin: 0;
-    padding: 20px;
-}
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
-.container {
-    max-width: 800px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #ddd;
-}
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-.header {
-    background: #3498db;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    border-radius: 8px;
-}
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-.footer {
-    text-align: center;
-    margin-top: 20px;
-    color: #888;
-}
+        <style>
+            body {
+                margin: 0;
+                background: #f3f4f6;
+                font-family: Arial, sans-serif;
+            }
 
-/* ---------- الحقول والنماذج (create & edit) ---------- */
-.form-group {
-    margin-bottom: 15px;
-}
+            main {
+                display: block;
+                width: 100%;
+            }
 
-.form-control {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box; 
-}
+            .blog-page {
+                max-width: 1200px;
+                margin: 24px auto;
+                padding: 0 20px;
+                box-sizing: border-box;
+            }
 
-textarea.form-control {
-    resize: vertical; 
-}
+            .blog-form-card {
+                background: #ffffff;
+                border: 1px solid #dfe3e8;
+                border-radius: 12px;
+                box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+                padding: 24px 20px;
+                max-width: 980px;
+                margin: 0 auto;
+            }
 
-/* ---------- الأزرار (Buttons) ---------- */
-.btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    text-align: center;
-}
+            .blog-form-card h2 {
+                margin: 0 0 20px;
+                color: #2c3e50;
+                font-size: 28px;
+            }
 
-.btn-sm {
-    padding: 5px 15px;
-    font-size: 13px;
-}
+            .blog-show-card {
+                background: #ffffff;
+                border: 1px solid #dfe3e8;
+                border-radius: 12px;
+                box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+                padding: 24px 20px;
+                max-width: 980px;
+                margin: 0 auto;
+            }
 
-/* ألوان الأزرار */
-.btn-success {
-    background: #28a745;
-    color: white;
-}
+            .blog-show-card h2 {
+                margin: 0 0 20px;
+                color: #2c3e50;
+                font-size: 28px;
+            }
 
-.btn-success:hover {
-    background: #218838;
-}
+            .blog-show-content {
+                color: #2c3e50;
+                font-size: 18px;
+                line-height: 1.8;
+                margin: 0 0 24px;
+            }
 
-.btn-primary {
-    background: #007bff;
-    color: white;
-}
+            .meta-box {
+                background: #f8f9fa;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                padding: 18px 20px;
+                margin: 20px 0;
+            }
 
-.btn-primary:hover {
-    background: #0069d9;
-}
+            .meta-box p {
+                margin: 10px 0;
+                color: #374151;
+            }
 
-.btn-info {
-    background: #17a2b8;
-    color: white;
-}
+            .blog-form {
+                width: 100%;
+            }
 
-.btn-info:hover {
-    background: #138496;
-}
+            .form-group {
+                margin-bottom: 20px;
+            }
 
-.btn-warning {
-    background: #ffc107;
-    color: #333;
-}
+            .blog-form label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 700;
+                color: #2c3e50;
+            }
 
-.btn-warning:hover {
-    background: #e0a800;
-}
+            .form-control {
+                width: 100%;
+                padding: 10px 12px;
+                border-radius: 8px;
+                border: 1px solid #d1d5db;
+                background: white;
+                box-sizing: border-box;
+                font-size: 16px;
+            }
 
-.btn-danger {
-    background: #dc3545;
-    color: white;
-}
+            textarea.form-control {
+                resize: vertical;
+                min-height: 160px;
+            }
 
-.btn-danger:hover {
-    background: #c82333;
-}
+            .blog-form-actions {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-top: 24px;
+            }
 
-.btn-secondary {
-    background: #6c757d;
-    color: white;
-}
+            .btn {
+                display: inline-block;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                text-decoration: none;
+                font-size: 14px;
+                text-align: center;
+                transition: all 0.2s ease;
+            }
 
-.btn-secondary:hover {
-    background: #5a6268;
-}
+            .btn-sm {
+                padding: 6px 14px;
+                font-size: 13px;
+            }
 
-.btn-link {
-    background: transparent;
-    color: #007bff;
-    text-decoration: underline;
-    padding: 10px 0;
-}
+            .btn-success {
+                background: #28a745;
+                color: white;
+            }
 
-/* ---------- رسائل التنبيه ---------- */
-.alert {
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
+            .btn-success:hover {
+                background: #218838;
+            }
 
-.alert-success {
-    background: #d4edda;
-    color: #155724;
-}
+            .btn-primary {
+                background: #007bff;
+                color: white;
+            }
 
-.alert-danger {
-    background: #f8d7da;
-    color: #721c24;
-}
+            .btn-primary:hover {
+                background: #0069d9;
+            }
 
-/* ---------- صفحة عرض المدونات (Index) ---------- */
-.post-item {
-    border-bottom: 2px solid #eee;
-    padding: 15px 0;
-}
+            .btn-info {
+                background: #17a2b8;
+                color: white;
+            }
 
-.post-title {
-    color: #2c3e50;
-}
+            .btn-info:hover {
+                background: #138496;
+            }
 
-.post-excerpt {
-    color: #555;
-}
+            .btn-warning {
+                background: #ffc107;
+                color: #333;
+            }
 
-.post-meta {
-    color: #999;
-    font-size: 14px;
-}
+            .btn-warning:hover {
+                background: #e0a800;
+            }
 
-.action-buttons {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-}
+            .btn-danger {
+                background: #dc3545;
+                color: white;
+            }
 
-/* ---------- صفحة العرض الفردي (Show) ---------- */
-.post-content-full {
-    font-size: 18px;
-    line-height: 1.8;
-}
+            .btn-danger:hover {
+                background: #c82333;
+            }
 
-.meta-box {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 20px 0;
-}
+            .btn-secondary {
+                background: #6c757d;
+                color: white;
+            }
 
-/* ---------- الترقيم (Pagination) ---------- */
-.pagination-wrapper {
-    margin-top: 20px;
-}
-</style>
-</head>
-<body>
-    <div class="container">
-        
-        <div class="header">
-            <h1> مدونتي الخاصة</h1>
+            .btn-secondary:hover {
+                background: #5a6268;
+            }
+
+            .btn-link {
+                display: inline-block;
+                padding: 10px 0;
+                color: #007bff;
+                text-decoration: underline;
+            }
+
+            .alert {
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }
+
+            .alert-success {
+                background: #d4edda;
+                color: #155724;
+            }
+
+            .alert-danger {
+                background: #f8d7da;
+                color: #721c24;
+            }
+
+            .post-item {
+                border-bottom: 2px solid #eee;
+                padding: 15px 0;
+            }
+
+            .post-title {
+                color: #2c3e50;
+            }
+
+            .post-excerpt {
+                color: #555;
+            }
+
+            .post-meta {
+                color: #999;
+                font-size: 14px;
+            }
+
+            .action-buttons {
+                margin-top: 10px;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .pagination-wrapper {
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+            @include('layouts.navigation')
+
+            @isset($header)
+                <header class="bg-white dark:bg-gray-800 shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endisset
+
+            <main>
+                @if (isset($slot))
+                    {{ $slot }}
+                @else
+                    @yield('content')
+                @endif
+            </main>
         </div>
-
-        @yield('content')
-
-        
-    </div>
-</body>
+    </body>
 </html>

@@ -9,8 +9,7 @@ Route::get('/', function () {
 
 Route::resource('blogs', BlogController::class);
 
-Route::get('/user/{id}', function ($id) {
-    return 'المستخدم رقم: ' . $id;
-})->name('user.id');
-Route::get('/users', [App\Http\Controllers\UserController::class, 'index']);
-
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
+require __DIR__.'/auth.php';

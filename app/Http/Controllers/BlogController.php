@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);
+    }
+  
     public function index()
     {
-        
-          $blogs = Blog::simplepaginate(2); 
-    return view('blogs.index', compact('blogs'));
+        $blogs = Blog::with('user')->simplePaginate(2);
 
+        return view('blogs.index', compact('blogs'));
     }
 
     /**
@@ -31,13 +34,14 @@ class BlogController extends Controller
     {
         $data = $request->validate([
             'title' => 'required|min:3',
-            'content' => 'required|min:10',
+            'content' => 'required',
         ]);
+
+        $data['user_id'] = auth()->id();
 
         Blog::create($data);
 
         return redirect()->route('blogs.index')->with('success', 'تم إضافة المدونة بنجاح!');
-
     }
 
     /**
@@ -45,7 +49,9 @@ class BlogController extends Controller
      */
     public function show(Blog $blog)
     {
-         return view('blogs.show', compact('blog'));
+        $blog->load('user');
+
+        return view('blogs.show', compact('blog'));
     }
 
     /**
@@ -64,7 +70,7 @@ class BlogController extends Controller
 {
     $data = $request->validate([
         'title' => 'required|min:3',
-        'content' => 'required|min:10',
+        'content' => 'required',
     ]);
 
     $blog = Blog::findOrFail($id);

@@ -10,14 +10,14 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('blogs', function (Blueprint $table) {
-        $table->id();                  // عمود المفتاح الأساسي
-        $table->string('title');       // عمود النص (العنوان) - لازم يطابق $fillable
-        $table->text('content');      
-        $table->timestamps();          
-    });
-}
+    {
+        Schema::create('blogs', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('content');
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.
